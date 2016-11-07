@@ -17,6 +17,8 @@ void routes_root() {
         message += blinds[0].obstruction_detected ? "true" : "false";
         message += ",\"moving\":";
         message += blinds[0].moving_to_target ? "true" : "false";
+        message += ",\"luminance\":";
+        message += luminance;
         message += "}";
         server.send(200, "application/json", message);
         break;

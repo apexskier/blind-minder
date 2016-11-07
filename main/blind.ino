@@ -1,8 +1,10 @@
 #define TOLERANCE 0.001
 
-Blind::Blind(int pin) {
-    this->pin = pin;
-    this->servo.attach(pin);
+Blind::Blind(int servo_pin, read_servo_val_func read_func) {
+    this->servo_pin = servo_pin;
+    this->read_func = read_func;
+
+    this->servo.attach(servo_pin);
 };
 
 void Blind::loop() {
@@ -23,5 +25,5 @@ void Blind::stop() {
 }
 
 int Blind::read() {
-    return map(analogRead(this->pin), 0, ANALOG_MAX, -179, 179);
+    return map(this->read_func(), 0, ANALOG_MAX, -179, 179);
 }

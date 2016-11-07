@@ -15,6 +15,7 @@
 #include "routes.h"
 #include "wifi.h"
 
+// https://learn.adafruit.com/adafruit-4-channel-adc-breakouts/programming
 Adafruit_ADS1015 analog_pins;
 
 int read_servo_a_val() {

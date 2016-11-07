@@ -1,3 +1,5 @@
+// https://learn.adafruit.com/analog-feedback-servos/using-feedback
+
 #define TOLERANCE 0.001
 
 Blind::Blind(int servo_pin, read_servo_val_func read_func) {

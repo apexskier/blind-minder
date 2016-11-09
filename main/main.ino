@@ -3,43 +3,48 @@
 
 #define NUM_BLINDS 2
 #define ANALOG_MAX 1024
+#define MAX_DEGREES 120
 // TODO
-#define SERVO_A_PIN 7
-#define SERVO_B_PIN 8
+#define SERVO_A_PIN 12
+#define SERVO_B_PIN 13
 #define SERVO_A_SENSOR_PIN 0
 #define SERVO_B_SENSOR_PIN 1
-#define LIGHT_SENSOR_PIN 2
+#define LIGHT_SENSOR_PIN 3
 
 #include "blind.h"
 #include "light_sensor.h"
 #include "routes.h"
 #include "wifi.h"
 
+
 // https://learn.adafruit.com/adafruit-4-channel-adc-breakouts/programming
-Adafruit_ADS1015 analog_pins;
+Adafruit_ADS1015 analog_pins = Adafruit_ADS1015();
 
 int read_servo_a_val() {
-    analog_pins.readADC_SingleEnded(SERVO_A_SENSOR_PIN);
+    return analog_pins.readADC_SingleEnded(SERVO_A_SENSOR_PIN);
 }
 int read_servo_b_val() {
-    analog_pins.readADC_SingleEnded(SERVO_B_SENSOR_PIN);
+    return analog_pins.readADC_SingleEnded(SERVO_B_SENSOR_PIN);
 }
 
-Blind blinds[NUM_BLINDS] = {
-    Blind(SERVO_A_PIN, read_servo_a_val),
-    Blind(SERVO_B_PIN, read_servo_b_val)
-};
+Blind blinds[NUM_BLINDS];
 
 
 void setup() {
     Serial.begin(115200);
-    Serial.println();
-    Serial.println();
+    Serial.println("+------------+");
+    Serial.println("| booting up |");
+    Serial.println("+------------+");
 
     analogWriteRange(ANALOG_MAX);
-    // analogReference(EXTERNAL); // ??? make sure this is necessary
+    
+    delay(2000); // Wait a moment before starting up
 
     analog_pins.begin();
+
+    Serial.println();
+    blinds[0] = Blind(SERVO_A_PIN, read_servo_a_val, 850, 40, 2500, 500);
+    blinds[1] = Blind(SERVO_B_PIN, read_servo_b_val, 850, 40, 2500, 500);
 
     wifi_setup();
     routes_setup();
@@ -52,7 +57,9 @@ void loop() {
 
     luminance = light_sensor_read();
 
-    for (i = 0; i <= NUM_BLINDS; i++) {
+    routes_loop();
+    
+    for (i = 0; i < NUM_BLINDS; i++) {
         blinds[i].loop();
     }
 }

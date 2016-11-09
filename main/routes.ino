@@ -2,6 +2,11 @@ void routes_setup() {
     server.on("/", routes_root);
     server.onNotFound(routes_404);
     server.begin();
+    Serial.println("HTTP server started");
+}
+
+void routes_loop() {
+    server.handleClient();
 }
 
 void routes_root() {
@@ -39,9 +44,11 @@ void routes_root() {
             }
             // reject values outside of servo's range
             // also will reject if val wasn't provided in call
-            if (val <= 180 && val >= -180) {
+            if (val <= MAX_DEGREES && val >= 0) {
+                Serial.print("Received request to set blinds to ");
+                Serial.println(val);
                 for (int i = 0; i < NUM_BLINDS; i++) {
-                    blinds[i].set(val);
+                    blinds[i].seek(val);
                 }
                 server.send(202);
                 break;

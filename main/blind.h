@@ -8,13 +8,23 @@ public:
     bool obstruction_detected;
     bool moving_to_target;
 
+    Blind();
     Blind(int servo_pin, read_servo_val_func read_func);
+    Blind(int servo_pin, read_servo_val_func read_func, int max_read, int min_read, int max_pos, int min_pos);
     void loop();
-    void set(int degrees);
+    void seek(int degrees);
     void stop();
     int read();
 private:
     Servo servo;
     int servo_pin;
     read_servo_val_func read_func;
+
+    int max_read;
+    int min_read;
+    int max_pos;
+    int min_pos;
+
+    void calibrate();
+    void print_status();
 };

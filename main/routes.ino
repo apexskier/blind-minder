@@ -14,14 +14,22 @@ void routes_root() {
     uint8_t num_args;
     switch (server.method()) {
     case HTTP_GET:
-        message += "{\"target\":";
-        message += blinds[0].target_angle;
-        message += ",\"current\":";
-        message += blinds[0].read();
-        message += ",\"obstructed\":";
-        message += blinds[0].obstruction_detected ? "true" : "false";
-        message += ",\"moving\":";
-        message += blinds[0].moving_to_target ? "true" : "false";
+        message += "{\"blinds\":[";
+        for (int i = 0; i < NUM_BLINDS; i++) {
+            message += "{\"target\":";
+            message += blinds[i].target_angle;
+            message += ",\"current\":";
+            message += blinds[i].read();
+            message += ",\"obstructed\":";
+            message += blinds[i].obstruction_detected ? "true" : "false";
+            message += ",\"moving\":";
+            message += blinds[i].moving_to_target ? "true" : "false";
+            message += "}";
+            if (i < NUM_BLINDS - 1) {
+                message += ",";
+            }
+        }
+        message += "],";
         message += ",\"luminance\":";
         message += luminance;
         message += "}";

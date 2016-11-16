@@ -30,7 +30,7 @@ void routes_root() {
             }
         }
         message += "],";
-        message += ",\"luminance\":";
+        message += "\"luminance\":";
         message += luminance;
         message += "}";
         server.send(200, "application/json", message);

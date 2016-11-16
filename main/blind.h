@@ -24,6 +24,7 @@ private:
     int min_read;
     int max_pos;
     int min_pos;
+    unsigned long time_seeked;
 
     void calibrate();
     void print_status();

@@ -58,7 +58,7 @@ servoPosX = (blindWidth / 2) - largeSpokeOffset;
 gearDiameter = 5.5;
 gearDepth = 3;
 splineCount = 22;
-hexDiameter = 7.5; // (enclosing circle)
+hexDiameter = 7.7; // (enclosing circle)
 screwDiameter = 3;
 screwHeadDiameter = 6;
 

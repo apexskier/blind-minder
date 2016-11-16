@@ -4,13 +4,13 @@
 #define NUM_BLINDS 2
 #define ANALOG_MAX 1024
 #define MAX_DEGREES 120
-// TODO
 #define SERVO_A_PIN 12
 #define SERVO_B_PIN 13
 #define SERVO_A_SENSOR_PIN 0
 #define SERVO_B_SENSOR_PIN 1
 #define LIGHT_SENSOR_PIN 3
 
+#include "private.h"
 #include "blind.h"
 #include "light_sensor.h"
 #include "routes.h"
@@ -37,7 +37,7 @@ void setup() {
     Serial.println("+------------+");
 
     analogWriteRange(ANALOG_MAX);
-    
+
     delay(2000); // Wait a moment before starting up
 
     analog_pins.begin();
@@ -58,7 +58,7 @@ void loop() {
     luminance = light_sensor_read();
 
     routes_loop();
-    
+
     for (i = 0; i < NUM_BLINDS; i++) {
         blinds[i].loop();
     }

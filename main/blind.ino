@@ -1,6 +1,7 @@
 // https://learn.adafruit.com/analog-feedback-servos/using-feedback
 
-#define TOLERANCE 2
+#define TOLERANCE 4
+#define SEEK_DELAY 1000
 
 Blind::Blind() {}
 
@@ -16,7 +17,7 @@ Blind::Blind(int servo_pin, read_servo_val_func read_func, int max_read, int min
     this->min_read = min_read;
     this->max_pos = max_pos;
     this->min_pos = min_pos;
-    
+
     Serial.println(F("Servo initialized"));
     this->print_status();
 }
@@ -36,7 +37,7 @@ Blind::Blind(int servo_pin, read_servo_val_func read_func) {
     this->min_pos = 10;
 
     this->calibrate();
-    
+
     Serial.println(F("Servo initialized"));
     this->print_status();
 };
@@ -60,7 +61,7 @@ void Blind::calibrate() {
 
     servo.writeMicroseconds(0);
     delay(1000); // make sure it has time to get there and settle
-    
+
     for (int i = 0; i <= 3000; i += 10) {
         servo.writeMicroseconds(i);
         delay(20);
@@ -78,7 +79,7 @@ void Blind::calibrate() {
         }
         last_read = val;
     }
-    
+
     Serial.print(F("Blind calibrated ("));
     Serial.print(this->servo_pin);
     Serial.println(F(")"));
@@ -92,28 +93,31 @@ void Blind::calibrate() {
 
 void Blind::loop() {
     //Serial.println("in blind loop.");
-    int val = this->read();
-    int diff = val - this->target_angle;
+    // int val = this->read();
+    // int diff = val - this->target_angle;
 //    if (this->moving_to_target) {
 //        Serial.print("in blind loop. READ: ");
 //        Serial.println(val);
 //    }
-    if (this->moving_to_target && (abs(diff) < TOLERANCE)) {
+    // if (this->moving_to_target && (abs(diff) < TOLERANCE)) {
+    if (this->moving_to_target && millis() - this->time_seeked > SEEK_DELAY) {
         this->moving_to_target = false;
         this->servo.detach();
     }
 }
 
 void Blind::seek(int deg) {
-    this->target_angle = deg;
-    this->moving_to_target = true;
-    this->servo.attach(this->servo_pin, this->min_pos, this->max_pos);
-    this->servo.writeMicroseconds(map(deg, 0, 120, this->min_pos, this->max_pos));
-    //this->servo.write(deg);
+    if (!this->moving_to_target) {
+        this->target_angle = deg;
+        this->moving_to_target = true;
+        this->time_seeked = millis();
+        this->servo.attach(this->servo_pin, this->min_pos, this->max_pos);
+        this->servo.writeMicroseconds(map(deg, 0, 120, this->min_pos, this->max_pos));
+        //this->servo.write(deg);
+    }
 }
 
 void Blind::stop() {
-    this->target_angle = this->read();
     this->moving_to_target = false;
     this->servo.detach();
 }

@@ -1,0 +1,3 @@
+const char* ssid     = "ssid";
+const char* password = "not my real password";
+

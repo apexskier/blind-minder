@@ -22,9 +22,9 @@ void routes_root() {
             message += blinds[i].read();
             message += ",\"obstructed\":";
             message += blinds[i].obstruction_detected ? "true" : "false";
-            message += ",\"moving\":";
-            message += blinds[i].moving_to_target ? "true" : "false";
-            message += "}";
+            message += ",\"moving\":\"";
+            message += blinds[i].get_status();
+            message += "\"}";
             if (i < NUM_BLINDS - 1) {
                 message += ",";
             }
@@ -56,7 +56,16 @@ void routes_root() {
                 Serial.print("Received request to set blinds to ");
                 Serial.println(val);
                 for (int i = 0; i < NUM_BLINDS; i++) {
-                    blinds[i].seek(val);
+                    if (blinds[i].status != stopped) {
+                        server.send(409);
+                        return;
+                    }
+                }
+                for (int i = 0; i < NUM_BLINDS; i++) {
+                    if (!blinds[i].seek(val)) {
+                        server.send(500);
+                        return;
+                    }
                 }
                 server.send(202);
                 break;

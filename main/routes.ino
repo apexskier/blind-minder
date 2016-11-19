@@ -40,10 +40,13 @@ void routes_root() {
         num_args = server.args();
         if (num_args > 0) {
             int val = 10000; // larger than valid
+            boolean force = false;
             for (uint8_t arg_i = 0; arg_i < num_args; arg_i++) {
                 String arg_name = server.argName(arg_i);
                 if (arg_name == "v") {
                     val = server.arg(arg_i).toInt();
+                } else if (arg_name == "f") {
+                    force = true;
                 } else if (arg_name == "plain") {
                     // ignore TODO: find out why this exists
                 } else {
@@ -57,9 +60,13 @@ void routes_root() {
                 Serial.print("Received request to set blinds to ");
                 Serial.println(val);
                 for (int i = 0; i < NUM_BLINDS; i++) {
-                    if (blinds[i].status != stopped) {
-                        server.send(409);
-                        return;
+                    if (force) {
+                        blinds[i].stop();
+                    } else {
+                        if (blinds[i].status != stopped) {
+                            server.send(409);
+                            return;
+                        }
                     }
                 }
                 for (int i = 0; i < NUM_BLINDS; i++) {

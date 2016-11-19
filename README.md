@@ -11,15 +11,16 @@ http interface is exposed, and feedback servos allow normal manual control.
 
 ## HTTP interface
 
-### POST `/?v={val}`
+### POST `/?v={val}[&f=*]`
 
-Angles blinds to `val` degrees. `val` is an int between -180 and 180.
+Angles blinds to `val` degrees. `val` is an int between -180 and 180. set f to
+force.
 
 **202** success, blinds will move to specified value
 
 **400** invalid request, extra, missing, or invalid parameters
 
-**409** can't complete operation, already moving (if you need it to work, call stop first)
+**409** can't complete operation, already moving (won't happen if you force)
 
 ### GET `/`
 

@@ -19,6 +19,8 @@ Angles blinds to `val` degrees. `val` is an int between -180 and 180.
 
 **400** invalid request, extra, missing, or invalid parameters
 
+**409** can't complete operation, already moving (if you need it to work, call stop first)
+
 ### GET `/`
 
 Returns a JSON blob of data with the current status of the blinds.
@@ -31,3 +33,7 @@ JSON fields
 - **obstructed** _boolean_ The blinds have detected an obstruction
 - **moving** _boolean_ If the blinds are moving to the current target angle
 - **luminance** _float_ Luminance in lux, intended to be outside luminance
+
+### [ANY] `/stop`
+
+**202** success, servo will be stopped

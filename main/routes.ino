@@ -1,5 +1,6 @@
 void routes_setup() {
     server.on("/", routes_root);
+    server.on("/stop", routes_stop);
     server.onNotFound(routes_404);
     server.begin();
     Serial.println("HTTP server started");
@@ -77,6 +78,13 @@ void routes_root() {
         server.send(405);
         break;
     }
+}
+
+void routes_stop() {
+    for (int i = 0; i < NUM_BLINDS; i++) {
+        blinds[i].stop();
+    }
+    server.send(202);
 }
 
 void routes_404() {

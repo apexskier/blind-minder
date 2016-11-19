@@ -6,4 +6,5 @@ ESP8266WebServer server(80);
 void routes_setup();
 void routes_404();
 void routes_root();
+void routes_stop();
 void routes_loop();
